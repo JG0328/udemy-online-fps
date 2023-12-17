@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Photon.Realtime;
@@ -14,5 +12,10 @@ public class RoomButton : MonoBehaviour
     {
         info = inputInfo;
         buttonText.text = info.Name;
+    }
+
+    public void OpenRoom()
+    {
+        Launcher.Instance.JoinRoom(info);
     }
 }
