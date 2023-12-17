@@ -25,6 +25,14 @@ public class PlayerController : MonoBehaviour
     public bool isGrounded;
     public LayerMask groundLayers;
 
+    public GameObject bulletImpact;
+    public float timeBetweenShots = .1f;
+    private float shotCounter;
+
+    public float maxHeat = 10f, heatPerShot = 1f, coolRate = 4f, overheatCoolRate = 5f;
+    private float heatCounter;
+    private bool overheated;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -74,6 +82,39 @@ public class PlayerController : MonoBehaviour
 
         charCon.Move(movement * Time.deltaTime);
 
+        if (!overheated)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Shoot();
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                shotCounter -= Time.deltaTime;
+
+                if (shotCounter <= 0)
+                {
+                    Shoot();
+                }
+            }
+
+            heatCounter -= coolRate * Time.deltaTime;
+        }
+        else
+        {
+            heatCounter -= overheatCoolRate * Time.deltaTime;
+            if (heatCounter <= 0)
+            {
+                overheated = false;
+            }
+        }
+
+        if (heatCounter < 0)
+        {
+            heatCounter = 0;
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Cursor.lockState = CursorLockMode.None;
@@ -84,6 +125,29 @@ public class PlayerController : MonoBehaviour
             {
                 Cursor.lockState = CursorLockMode.Locked;
             }
+        }
+    }
+
+    private void Shoot()
+    {
+        Ray ray = cam.ViewportPointToRay(new Vector3(.5f, .5f, 0f));
+        ray.origin = cam.transform.position;
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Debug.Log("We hit " + hit.collider.gameObject.name);
+
+            GameObject bulletImpactObject = Instantiate(bulletImpact, hit.point + (hit.normal * .002f), Quaternion.LookRotation(hit.normal, Vector3.up));
+            Destroy(bulletImpactObject, 10f);
+        }
+
+        shotCounter = timeBetweenShots;
+
+        heatCounter += heatPerShot;
+        if (heatCounter >= maxHeat)
+        {
+            heatCounter = maxHeat;
+            overheated = true;
         }
     }
 
