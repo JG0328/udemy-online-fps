@@ -21,6 +21,10 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 12f;
     public float gravityMod = 2.5f;
 
+    public Transform groundCheckPoint;
+    public bool isGrounded;
+    public LayerMask groundLayers;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -59,7 +63,9 @@ public class PlayerController : MonoBehaviour
             movement.y = 0f;
         }
 
-        if (Input.GetButtonDown("Jump"))
+        isGrounded = Physics.Raycast(groundCheckPoint.position, Vector3.down, .25f, groundLayers);
+
+        if (Input.GetButtonDown("Jump") && isGrounded)
         {
             movement.y = jumpForce;
         }
@@ -67,6 +73,18 @@ public class PlayerController : MonoBehaviour
         movement.y += Physics.gravity.y * Time.deltaTime * gravityMod;
 
         charCon.Move(movement * Time.deltaTime);
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else if (Cursor.lockState == CursorLockMode.None)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+            }
+        }
     }
 
     private void LateUpdate()
