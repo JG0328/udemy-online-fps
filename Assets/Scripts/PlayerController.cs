@@ -16,9 +16,13 @@ public class PlayerController : MonoBehaviour
 
     public CharacterController charCon;
 
+    private Camera cam;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+
+        cam = Camera.main;
     }
 
     private void Update()
@@ -43,8 +47,23 @@ public class PlayerController : MonoBehaviour
             activeMoveSpeed = moveSpeed;
         }
 
+        float yVel = movement.y;
         movement = ((transform.forward * moveDir.z) + (transform.right * moveDir.x)).normalized * activeMoveSpeed;
+        movement.y = yVel;
+
+        if (charCon.isGrounded)
+        {
+            movement.y = 0f;
+        }
+
+        movement.y += Physics.gravity.y * Time.deltaTime;
 
         charCon.Move(movement * Time.deltaTime);
+    }
+
+    private void LateUpdate()
+    {
+        cam.transform.position = viewPoint.position;
+        cam.transform.rotation = viewPoint.rotation;
     }
 }
