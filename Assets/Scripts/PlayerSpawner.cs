@@ -27,4 +27,11 @@ public class PlayerSpawner : MonoBehaviour
 
         player = PhotonNetwork.Instantiate(playerPrefab.name, spawnPoint.position, spawnPoint.rotation);
     }
+
+    public void Die()
+    {
+        PhotonNetwork.Destroy(player);
+
+        SpawnPlayer();
+    }
 }
