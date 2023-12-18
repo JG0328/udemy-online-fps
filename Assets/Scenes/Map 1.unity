@@ -2300,6 +2300,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 5092966206659275774, guid: fea4bf8eab2b4c64992b85eb98d567dc, type: 3}
+  deathEffect: {fileID: 4189589417206941310, guid: be72f480ce4545f4996269462bc1fdb9, type: 3}
 --- !u!1 &304458825
 GameObject:
   m_ObjectHideFlags: 0
