@@ -44,6 +44,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public int maxHealth = 100;
     private int currentHealth;
 
+    public Animator anim;
+    public GameObject playerModel;
+    public Transform modelGunPoint;
+    public Transform gunHolder;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -56,12 +61,22 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
         currentHealth = maxHealth;
 
-        UIController.Instance.healthSlider.maxValue = maxHealth;
-        UIController.Instance.healthSlider.value = currentHealth;
-
         //Transform newTrans = SpawnManager.Instance.GetSpawnPoint();
         //transform.position = newTrans.position;
         //transform.rotation = newTrans.rotation;
+        if (photonView.IsMine)
+        {
+            playerModel.SetActive(false);
+
+            UIController.Instance.healthSlider.maxValue = maxHealth;
+            UIController.Instance.healthSlider.value = currentHealth;
+        }
+        else
+        {
+            gunHolder.parent = modelGunPoint;
+            gunHolder.localPosition = Vector3.zero;
+            gunHolder.localRotation = Quaternion.identity;
+        }
     }
 
     private void Update()
@@ -186,6 +201,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
                     SwitchGun();
                 }
             }
+
+            anim.SetBool("grounded", isGrounded);
+            anim.SetFloat("speed", moveDir.magnitude);
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
