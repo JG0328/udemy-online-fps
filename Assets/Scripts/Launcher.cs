@@ -28,7 +28,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public GameObject nameInputScreen;
     public TMP_InputField nameInput;
-    private bool hasSetNick;
+    public static bool hasSetNick;
 
     public string levelToPlay;
     public GameObject startButton;
@@ -52,8 +52,10 @@ public class Launcher : MonoBehaviourPunCallbacks
 #if UNITY_EDITOR
 
         roomTestButton.SetActive(true);
-
 #endif
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public override void OnConnectedToMaster()
