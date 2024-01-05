@@ -145,14 +145,43 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
     }
 
-    public void UpdateStatsSend()
+    public void UpdateStatsSend(int actorSending, int statToUpdate, int amountToChange)
     {
+        object[] package = new object[] { actorSending, statToUpdate, amountToChange };
 
+        PhotonNetwork.RaiseEvent(
+            (byte)EventCodes.UpdateStat,
+            package,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All },
+            new SendOptions { Reliability = true }
+        );
     }
 
     public void UpdateStatsReceive(object[] dataReceived)
     {
+        int actor = (int)dataReceived[0];
+        int statType = (int)dataReceived[1];
+        int amount = (int)dataReceived[2];
 
+        for (int i = 0; i < allPlayers.Count; i++)
+        {
+            if (allPlayers[i].actor == actor)
+            {
+                switch (statType)
+                {
+                    case 0: // kills
+                        allPlayers[i].kills += amount;
+                        break;
+
+                    case 1: // deaths
+                        allPlayers[i].deaths += amount;
+                        break;
+
+                }
+
+                break;
+            }
+        }
     }
 }
 
