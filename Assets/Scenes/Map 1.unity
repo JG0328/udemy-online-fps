@@ -3811,6 +3811,7 @@ MonoBehaviour:
   mapCamPoint: {fileID: 1728332836}
   state: 0
   waitAfterEnding: 5
+  perpetual: 1
 --- !u!1 &789752595
 GameObject:
   m_ObjectHideFlags: 0
